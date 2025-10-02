@@ -565,13 +565,30 @@
     </div>
 
     <script>
+        // 安全配置 - 隐藏在实际代码中
+        const SECURITY_CONFIG = {
+            ADMIN_USERNAME: "3530388417",
+            ADMIN_PASSWORD: "19996837879gxh",
+            STORAGE_KEY: "chat_troop_websites_v2"
+        };
+
         // 主题切换功能
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
         
+        // 检查本地存储的主题偏好
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            if (isDarkMode) {
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
             } else {
@@ -596,23 +613,43 @@
             loginModal.style.display = 'none';
         });
         
+        // 点击模态框外部关闭
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+        
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            if (username === '3530388417' && password === '19996837879gxh') {
+            // 使用隐藏的凭据验证
+            if (username === SECURITY_CONFIG.ADMIN_USERNAME && password === SECURITY_CONFIG.ADMIN_PASSWORD) {
                 loginModal.style.display = 'none';
                 adminPanel.style.display = 'block';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                
+                // 设置管理员会话标识
+                sessionStorage.setItem('isAdmin', 'true');
                 alert('登录成功！您现在可以管理网站内容。');
             } else {
                 alert('用户名或密码错误！');
+                document.getElementById('password').value = '';
             }
         });
         
         exitAdminBtn.addEventListener('click', () => {
             adminPanel.style.display = 'none';
+            sessionStorage.removeItem('isAdmin');
         });
+
+        // 检查是否已经是管理员
+        if (sessionStorage.getItem('isAdmin') === 'true') {
+            adminPanel.style.display = 'block';
+        }
 
         // 网址管理功能
         const addWebsiteBtn = document.getElementById('addWebsiteBtn');
@@ -621,13 +658,28 @@
         const websiteList = document.getElementById('websiteList');
         const websitesGrid = document.getElementById('websitesGrid');
         
-        // 初始示例数据
-        let websites = [
-            { name: '闲聊部队论坛', url: 'https://example.com/forum', icon: 'fas fa-comments' },
-            { name: '资源分享中心', url: 'https://example.com/resources', icon: 'fas fa-share-alt' },
-            { name: '活动日历', url: 'https://example.com/events', icon: 'fas fa-calendar-alt' },
-            { name: '成员风采', url: 'https://example.com/members', icon: 'fas fa-users' }
-        ];
+        // 从本地存储加载网站数据
+        function loadWebsites() {
+            const stored = localStorage.getItem(SECURITY_CONFIG.STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            
+            // 默认网站数据
+            return [
+                { name: '闲聊部队论坛', url: 'https://example.com/forum', icon: 'fas fa-comments' },
+                { name: '资源分享中心', url: 'https://example.com/resources', icon: 'fas fa-share-alt' },
+                { name: '活动日历', url: 'https://example.com/events', icon: 'fas fa-calendar-alt' },
+                { name: '成员风采', url: 'https://example.com/members', icon: 'fas fa-users' }
+            ];
+        }
+        
+        // 保存网站数据到本地存储
+        function saveWebsites(websites) {
+            localStorage.setItem(SECURITY_CONFIG.STORAGE_KEY, JSON.stringify(websites));
+        }
+        
+        let websites = loadWebsites();
         
         // 渲染网站列表
         function renderWebsites() {
@@ -664,6 +716,7 @@
                 btn.addEventListener('click', (e) => {
                     const index = e.target.getAttribute('data-index');
                     websites.splice(index, 1);
+                    saveWebsites(websites);
                     renderWebsites();
                 });
             });
@@ -687,6 +740,7 @@
                     icon: 'fas fa-globe'
                 });
                 
+                saveWebsites(websites);
                 websiteName.value = '';
                 websiteUrl.value = '';
                 renderWebsites();
