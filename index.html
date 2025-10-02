@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>闲聊部队 - 官方网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cbc;
+            --accent: #ff7e5f;
+            --text: #333333;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --footer-bg: #2c3e50;
+            --border: #e1e4e8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            --primary: #6b8cbc;
+            --secondary: #8fa8d7;
+            --accent: #ff9e7d;
+            --text: #e4e4e4;
+            --bg: #1a1d23;
+            --card-bg: #2d3138;
+            --header-bg: #2d3138;
+            --footer-bg: #1a1d23;
+            --border: #3a3f47;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background-color: var(--header-bg);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .admin-login {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .admin-login i {
+            margin-right: 5px;
+        }
+        
+        .admin-login:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* 主题切换按钮 */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        
+        /* 主要内容区域 */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        /* 网址卡片区域 */
+        .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+        
+        .website-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .website-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow);
+        }
+        
+        .website-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .website-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .website-card p {
+            color: var(--text);
+            opacity: 0.8;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .visit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .visit-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* 联系开发者区域 */
+        .contact-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .contact-options {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .contact-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .contact-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .contact-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--footer-bg);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* 管理员登录模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+        
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* 管理员模式样式 */
+        .admin-panel {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .admin-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .exit-admin {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .add-website-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .add-website-form input {
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+        
+        .add-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .website-list {
+            list-style-type: none;
+        }
+        
+        .website-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .website-item:last-child {
+            border-bottom: none;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .add-website-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-options {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-comments"></i>
+                    <h1>闲聊部队</h1>
+                </div>
+                <div>
+                    <button class="admin-login" id="adminLoginBtn">
+                        <i class="fas fa-user-shield"></i> 管理员登录
+                    </button>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main>
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <div class="container">
+                <h2>欢迎来到闲聊部队</h2>
+                <p>一个自由交流、分享兴趣的个人社区组织。在这里，你可以找到志同道合的朋友，分享生活中的点滴。</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- 管理员面板 -->
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-header">
+                    <h3 class="admin-title">管理员面板</h3>
+                    <button class="exit-admin" id="exitAdminBtn">退出管理员模式</button>
+                </div>
+                <div class="add-website-form">
+                    <input type="text" id="websiteName" placeholder="网址名称">
+                    <input type="text" id="websiteUrl" placeholder="网址链接">
+                    <button class="add-btn" id="addWebsiteBtn">添加网址</button>
+                </div>
+                <ul class="website-list" id="websiteList">
+                    <!-- 动态添加的网址将显示在这里 -->
+                </ul>
+            </div>
+
+            <!-- 推荐网站区域 -->
+            <h2 class="section-title">推荐网站</h2>
+            <div class="websites-grid" id="websitesGrid">
+                <!-- 动态添加的网站卡片将显示在这里 -->
+            </div>
+
+            <!-- 联系开发者区域 -->
+            <h2 class="section-title">联系开发者</h2>
+            <div class="contact-section">
+                <div class="contact-options">
+                    <div class="contact-option">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <h3>邮箱联系</h3>
+                        <p>通过QQ邮箱直接联系开发者</p>
+                        <button class="contact-btn" id="emailBtn">发送邮件</button>
+                    </div>
+                    <div class="contact-option">
+                        <i class="fab fa-qq contact-icon"></i>
+                        <h3>加入QQ群</h3>
+                        <p>与更多成员交流互动</p>
+                        <button class="contact-btn" id="qqGroupBtn">加入群聊</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <i class="fas fa-comments footer-logo"></i>
+                </div>
+                <p>闲聊部队 - 自由交流的个人社区</p>
+                <p class="copyright">© 2023 闲聊部队. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 管理员登录模态框 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">管理员登录</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" class="form-control" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" class="form-control" placeholder="请输入密码">
+                </div>
+                <button type="submit" class="submit-btn">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // 管理员登录功能
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const adminPanel = document.getElementById('adminPanel');
+        const exitAdminBtn = document.getElementById('exitAdminBtn');
+        
+        adminLoginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === '3530388417' && password === '19996837879gxh') {
+                loginModal.style.display = 'none';
+                adminPanel.style.display = 'block';
+                alert('登录成功！您现在可以管理网站内容。');
+            } else {
+                alert('用户名或密码错误！');
+            }
+        });
+        
+        exitAdminBtn.addEventListener('click', () => {
+            adminPanel.style.display = 'none';
+        });
+
+        // 网址管理功能
+        const addWebsiteBtn = document.getElementById('addWebsiteBtn');
+        const websiteName = document.getElementById('websiteName');
+        const websiteUrl = document.getElementById('websiteUrl');
+        const websiteList = document.getElementById('websiteList');
+        const websitesGrid = document.getElementById('websitesGrid');
+        
+        // 初始示例数据
+        let websites = [
+            { name: '闲聊部队论坛', url: 'https://example.com/forum', icon: 'fas fa-comments' },
+            { name: '资源分享中心', url: 'https://example.com/resources', icon: 'fas fa-share-alt' },
+            { name: '活动日历', url: 'https://example.com/events', icon: 'fas fa-calendar-alt' },
+            { name: '成员风采', url: 'https://example.com/members', icon: 'fas fa-users' }
+        ];
+        
+        // 渲染网站列表
+        function renderWebsites() {
+            // 清空现有内容
+            websiteList.innerHTML = '';
+            websitesGrid.innerHTML = '';
+            
+            // 渲染管理员面板中的列表
+            websites.forEach((website, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'website-item';
+                listItem.innerHTML = `
+                    <span>${website.name}</span>
+                    <button class="delete-btn" data-index="${index}">删除</button>
+                `;
+                websiteList.appendChild(listItem);
+            });
+            
+            // 渲染主页面中的网站卡片
+            websites.forEach(website => {
+                const card = document.createElement('div');
+                card.className = 'website-card';
+                card.innerHTML = `
+                    <i class="${website.icon} website-icon"></i>
+                    <h3>${website.name}</h3>
+                    <p>点击下方按钮访问${website.name}</p>
+                    <button class="visit-btn" onclick="window.open('${website.url}', '_blank')">访问网站</button>
+                `;
+                websitesGrid.appendChild(card);
+            });
+            
+            // 添加删除按钮事件监听
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.getAttribute('data-index');
+                    websites.splice(index, 1);
+                    renderWebsites();
+                });
+            });
+        }
+        
+        // 添加新网站
+        addWebsiteBtn.addEventListener('click', () => {
+            const name = websiteName.value.trim();
+            const url = websiteUrl.value.trim();
+            
+            if (name && url) {
+                // 确保URL格式正确
+                let formattedUrl = url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    formattedUrl = 'https://' + url;
+                }
+                
+                websites.push({
+                    name: name,
+                    url: formattedUrl,
+                    icon: 'fas fa-globe'
+                });
+                
+                websiteName.value = '';
+                websiteUrl.value = '';
+                renderWebsites();
+            } else {
+                alert('请填写完整的网站信息！');
+            }
+        });
+        
+        // 联系开发者功能
+        document.getElementById('emailBtn').addEventListener('click', () => {
+            window.location.href = 'mailto:3530388417@qq.com';
+        });
+        
+        document.getElementById('qqGroupBtn').addEventListener('click', () => {
+            window.open('https://qm.qq.com/q/q38OdsvcFW', '_blank');
+        });
+        
+        // 初始化渲染
+        renderWebsites();
+    </script>
+</body>
+</html>
