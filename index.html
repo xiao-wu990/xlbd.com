@@ -104,7 +104,6 @@
             background-color: var(--secondary);
         }
         
-        /* 主题切换按钮 */
         .theme-toggle {
             background: none;
             border: none;
@@ -145,7 +144,7 @@
         /* 网址卡片区域 */
         .websites-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
             margin-bottom: 60px;
         }
@@ -157,8 +156,6 @@
             box-shadow: 0 5px 15px var(--shadow);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
         
@@ -167,33 +164,40 @@
             box-shadow: 0 10px 20px var(--shadow);
         }
         
-        .website-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
+        .website-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
         }
         
+        .website-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+        
         .website-card h3 {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 1.3rem;
         }
         
-        .website-card p {
+        .website-description {
             color: var(--text);
             opacity: 0.8;
             margin-bottom: 20px;
-            flex-grow: 1;
+            line-height: 1.5;
         }
         
         .visit-btn {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.9rem;
             width: 100%;
+            margin-top: auto;
         }
         
         .visit-btn:hover {
@@ -382,17 +386,23 @@
         
         .add-website-form {
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr 1fr auto;
             gap: 15px;
             margin-bottom: 20px;
         }
         
-        .add-website-form input {
+        .add-website-form input, .add-website-form textarea {
             padding: 10px 15px;
             border: 1px solid var(--border);
             border-radius: 8px;
             background-color: var(--bg);
             color: var(--text);
+        }
+        
+        .add-website-form textarea {
+            grid-column: 1 / -1;
+            resize: vertical;
+            min-height: 80px;
         }
         
         .add-btn {
@@ -496,7 +506,9 @@
                 <div class="add-website-form">
                     <input type="text" id="websiteName" placeholder="网址名称">
                     <input type="text" id="websiteUrl" placeholder="网址链接">
-                    <button class="add-btn" id="addWebsiteBtn">添加网址</button>
+                    <input type="text" id="websiteIcon" placeholder="图标类名 (如: fas fa-globe)">
+                    <button class="add-btn" id="addWebsiteBtn">添加</button>
+                    <textarea id="websiteDescription" placeholder="网站介绍..."></textarea>
                 </div>
                 <ul class="website-list" id="websiteList">
                     <!-- 动态添加的网址将显示在这里 -->
@@ -565,18 +577,72 @@
     </div>
 
     <script>
-        // 安全配置 - 隐藏在实际代码中
+        // 安全配置
         const SECURITY_CONFIG = {
             ADMIN_USERNAME: "3530388417",
-            ADMIN_PASSWORD: "19996837879gxh",
-            STORAGE_KEY: "chat_troop_websites_v2"
+            ADMIN_PASSWORD: "19996837879gxh"
         };
+
+        // 模拟数据库 - 在实际应用中替换为真实的API调用
+        class WebsiteAPI {
+            static async getAllWebsites() {
+                // 这里模拟从数据库获取数据
+                // 实际应该替换为: fetch('YOUR_API_URL/websites')
+                const stored = localStorage.getItem('chat_troop_websites_db');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+                
+                // 默认数据
+                return [
+                    { 
+                        id: 1, 
+                        name: '闲聊部队论坛', 
+                        url: 'https://example.com/forum', 
+                        icon: 'fas fa-comments',
+                        description: '我们的官方论坛，可以在这里发布话题、参与讨论、结交新朋友。'
+                    },
+                    { 
+                        id: 2, 
+                        name: '资源分享中心', 
+                        url: 'https://example.com/resources', 
+                        icon: 'fas fa-share-alt',
+                        description: '分享各种学习资源、软件工具、影视作品等，互相学习共同进步。'
+                    },
+                    { 
+                        id: 3, 
+                        name: '活动日历', 
+                        url: 'https://example.com/events', 
+                        icon: 'fas fa-calendar-alt',
+                        description: '查看最新的线上线下活动安排，不错过任何有趣的聚会和交流机会。'
+                    }
+                ];
+            }
+            
+            static async addWebsite(website) {
+                // 模拟添加网站到数据库
+                // 实际应该替换为: fetch('YOUR_API_URL/websites', { method: 'POST', body: JSON.stringify(website) })
+                const websites = await this.getAllWebsites();
+                website.id = Date.now(); // 简单ID生成
+                websites.push(website);
+                localStorage.setItem('chat_troop_websites_db', JSON.stringify(websites));
+                return website;
+            }
+            
+            static async deleteWebsite(id) {
+                // 模拟从数据库删除网站
+                // 实际应该替换为: fetch(`YOUR_API_URL/websites/${id}`, { method: 'DELETE' })
+                const websites = await this.getAllWebsites();
+                const filtered = websites.filter(w => w.id !== parseInt(id));
+                localStorage.setItem('chat_troop_websites_db', JSON.stringify(filtered));
+                return true;
+            }
+        }
 
         // 主题切换功能
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
         
-        // 检查本地存储的主题偏好
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
             themeIcon.classList.remove('fa-moon');
@@ -613,7 +679,6 @@
             loginModal.style.display = 'none';
         });
         
-        // 点击模态框外部关闭
         loginModal.addEventListener('click', (e) => {
             if (e.target === loginModal) {
                 loginModal.style.display = 'none';
@@ -625,14 +690,12 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            // 使用隐藏的凭据验证
             if (username === SECURITY_CONFIG.ADMIN_USERNAME && password === SECURITY_CONFIG.ADMIN_PASSWORD) {
                 loginModal.style.display = 'none';
                 adminPanel.style.display = 'block';
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 
-                // 设置管理员会话标识
                 sessionStorage.setItem('isAdmin', 'true');
                 alert('登录成功！您现在可以管理网站内容。');
             } else {
@@ -646,7 +709,6 @@
             sessionStorage.removeItem('isAdmin');
         });
 
-        // 检查是否已经是管理员
         if (sessionStorage.getItem('isAdmin') === 'true') {
             adminPanel.style.display = 'block';
         }
@@ -655,45 +717,33 @@
         const addWebsiteBtn = document.getElementById('addWebsiteBtn');
         const websiteName = document.getElementById('websiteName');
         const websiteUrl = document.getElementById('websiteUrl');
+        const websiteIcon = document.getElementById('websiteIcon');
+        const websiteDescription = document.getElementById('websiteDescription');
         const websiteList = document.getElementById('websiteList');
         const websitesGrid = document.getElementById('websitesGrid');
         
-        // 从本地存储加载网站数据
-        function loadWebsites() {
-            const stored = localStorage.getItem(SECURITY_CONFIG.STORAGE_KEY);
-            if (stored) {
-                return JSON.parse(stored);
-            }
-            
-            // 默认网站数据
-            return [
-                { name: '闲聊部队论坛', url: 'https://example.com/forum', icon: 'fas fa-comments' },
-                { name: '资源分享中心', url: 'https://example.com/resources', icon: 'fas fa-share-alt' },
-                { name: '活动日历', url: 'https://example.com/events', icon: 'fas fa-calendar-alt' },
-                { name: '成员风采', url: 'https://example.com/members', icon: 'fas fa-users' }
-            ];
+        // 加载并渲染网站
+        async function loadAndRenderWebsites() {
+            const websites = await WebsiteAPI.getAllWebsites();
+            renderWebsites(websites);
         }
-        
-        // 保存网站数据到本地存储
-        function saveWebsites(websites) {
-            localStorage.setItem(SECURITY_CONFIG.STORAGE_KEY, JSON.stringify(websites));
-        }
-        
-        let websites = loadWebsites();
         
         // 渲染网站列表
-        function renderWebsites() {
+        function renderWebsites(websites) {
             // 清空现有内容
             websiteList.innerHTML = '';
             websitesGrid.innerHTML = '';
             
             // 渲染管理员面板中的列表
-            websites.forEach((website, index) => {
+            websites.forEach((website) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'website-item';
                 listItem.innerHTML = `
-                    <span>${website.name}</span>
-                    <button class="delete-btn" data-index="${index}">删除</button>
+                    <div>
+                        <strong>${website.name}</strong>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">${website.url}</div>
+                    </div>
+                    <button class="delete-btn" data-id="${website.id}">删除</button>
                 `;
                 websiteList.appendChild(listItem);
             });
@@ -703,9 +753,13 @@
                 const card = document.createElement('div');
                 card.className = 'website-card';
                 card.innerHTML = `
-                    <i class="${website.icon} website-icon"></i>
-                    <h3>${website.name}</h3>
-                    <p>点击下方按钮访问${website.name}</p>
+                    <div class="website-header">
+                        <i class="${website.icon || 'fas fa-globe'} website-icon"></i>
+                        <div>
+                            <h3>${website.name}</h3>
+                        </div>
+                    </div>
+                    <p class="website-description">${website.description || '暂无介绍'}</p>
                     <button class="visit-btn" onclick="window.open('${website.url}', '_blank')">访问网站</button>
                 `;
                 websitesGrid.appendChild(card);
@@ -713,19 +767,23 @@
             
             // 添加删除按钮事件监听
             document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = e.target.getAttribute('data-index');
-                    websites.splice(index, 1);
-                    saveWebsites(websites);
-                    renderWebsites();
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (confirm('确定要删除这个网站吗？')) {
+                        await WebsiteAPI.deleteWebsite(id);
+                        await loadAndRenderWebsites();
+                        alert('网站已删除！');
+                    }
                 });
             });
         }
         
         // 添加新网站
-        addWebsiteBtn.addEventListener('click', () => {
+        addWebsiteBtn.addEventListener('click', async () => {
             const name = websiteName.value.trim();
             const url = websiteUrl.value.trim();
+            const icon = websiteIcon.value.trim() || 'fas fa-globe';
+            const description = websiteDescription.value.trim();
             
             if (name && url) {
                 // 确保URL格式正确
@@ -734,18 +792,26 @@
                     formattedUrl = 'https://' + url;
                 }
                 
-                websites.push({
+                const newWebsite = {
                     name: name,
                     url: formattedUrl,
-                    icon: 'fas fa-globe'
-                });
+                    icon: icon,
+                    description: description
+                };
                 
-                saveWebsites(websites);
+                await WebsiteAPI.addWebsite(newWebsite);
+                
+                // 清空表单
                 websiteName.value = '';
                 websiteUrl.value = '';
-                renderWebsites();
+                websiteIcon.value = '';
+                websiteDescription.value = '';
+                
+                // 重新渲染
+                await loadAndRenderWebsites();
+                alert('网站添加成功！所有用户现在都能看到这个更新。');
             } else {
-                alert('请填写完整的网站信息！');
+                alert('请至少填写网站名称和链接！');
             }
         });
         
@@ -758,8 +824,8 @@
             window.open('https://qm.qq.com/q/q38OdsvcFW', '_blank');
         });
         
-        // 初始化渲染
-        renderWebsites();
+        // 初始化加载
+        loadAndRenderWebsites();
     </script>
 </body>
 </html>
